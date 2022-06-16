@@ -1,0 +1,28 @@
+.mainHeader {
+    text-align: right;
+    background-color: navy;
+    color: white;
+
+    a {
+        color: white;
+    }
+
+    .siteTitle {
+        display: inline-block;
+        float: left;
+        font-size: 25px;
+        line-height: 70px;
+        margin-left: 10px;
+    }
+
+    .navHolder {
+        display: inline-block;
+        line-height: 70px;
+
+        a {
+            vertical-align: middle;
+            font-size: 18px;
+            padding: 0 5px;
+        }
+    }
+}
