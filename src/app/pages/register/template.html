@@ -1,1 +1,32 @@
-<p>Registration Page</p>
+<div class="container center">
+    <h1>Sign Up</h1>
+
+    <form [formGroup]="pageForm">
+        <div class="inputFieldHolder">
+            <label>NIN:</label>
+            <input type="text" required formControlName="nin"/>
+        </div>
+        <div class="inputFieldHolder">
+            <label>Fullname:</label>
+            <input type="text" required formControlName="fullname"/>
+        </div>
+        <div class="inputFieldHolder">
+            <label>Phone Number:</label>
+            <input type="text" required formControlName="phone" />
+        </div>
+        <div class="inputFieldHolder">
+            <label>State of Origin:</label>
+            <input type="text" required formControlName="stateOfOrigin" />
+        </div>
+        <div class="inputFieldHolder">
+            <label>Password:</label>
+            <input type="text" required formControlName="password" />
+        </div>
+        <div class="inputFieldHolder">
+            <button [disabled]="pageForm.invalid" (click)="createMember()">Sign Up</button>
+        </div>
+        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
+
+
+    </form>
+</div>

@@ -1,20 +1,18 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
-  selector: 'LoginPage',
+  selector: 'ProfilePage',
   templateUrl: './template.html',
   styleUrls: ['./style.scss']
 })
-export class LoginPage implements OnInit {
+export class ProfilePage implements OnInit {
 
   constructor(
-    public coreService: CoreService
-  ) {
-   }
+    private coreService: CoreService
+  ) { }
 
   ngOnInit(): void {
-
-    
   }
+
 }
