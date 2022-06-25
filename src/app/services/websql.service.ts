@@ -1,6 +1,6 @@
 import { HostListener, Injectable } from "@angular/core";
 import { IDataService } from "../interfaces/data-service";
-import { Member } from "../models";
+import { Member, Position } from "../models";
 
 type BrowserWindow = Window & typeof globalThis & { openDatabase: any }
 
@@ -14,11 +14,11 @@ export class WebSQLService implements IDataService {
     register(member: Member): Promise<Member> {
         return new Promise((resolve, reject) => {
             this.database.transaction((tx: any) => {
-                console.log(tx.executeSql)
                 tx.executeSql(`
-                INSERT INTO member VALUES (?,?,?,?,?,?)
+                INSERT INTO member VALUES (?,?,?,?,?,?,?)
                 `, [
                     member.nin,
+                    member.status,
                     member.fullname,
                     member.phone,
                     member.stateOfOrigin,
@@ -27,18 +27,67 @@ export class WebSQLService implements IDataService {
                 ], (_: any, result: any) => {
                     console.log(result)
                     resolve(result)
-                }, (e: Error) => {
+                }, (_: any, e: Error) => {
                     console.log(e)
-                    reject(new Error("Error creating a new member!!!"))
+                    if(String(e.message).indexOf("UNIQUE constraint") >=0) {
+                        reject(new Error(`NIN: ${member.nin} or phone number: ${member.phone} already exists in the database`))
+                    } else {
+                        reject(new Error("Error creating a new member!!!"))
+                    }
                 });
             });
         })
-        
     }
 
-    login(member: Member): Member {
-        throw new Error("login method not implemented.");
+    login(member: Member): Promise<Member> {
+        return new Promise((resolve, reject) => {
+            this.database.transaction((tx: any) => {
+                tx.executeSql(`
+                select rowid, * from member where nin=? and password=?
+                `, [
+                    member.nin,
+                    member.password,
+                ], (_: any, result: any) => {
+                    console.log(result)
+                    if(!result.rows.length) {
+                        return reject(new Error("Invalid nin or password"))
+                    }
+                    else if(result.rows[0].status == "Blocked"){
+                        return reject(new Error("This account is inactive, please contact the admin"))
+                    }
+                    resolve(result.rows[0] as Member)
+                }, (_: any, e: Error) => {
+                    console.log(e)
+                    reject(new Error("Error logging in at the momemt"))
+                });
+            });
+        })
     }
+
+    createPosition(position: Position): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.database.transaction((tx: any) => {
+                tx.executeSql(`
+                INSERT INTO votePosition VALUES (?,?,?)
+                `, [
+                    position.name,
+                    position.description,
+                    new Date(),
+                ], (_: any, result: any) => {
+                    console.log(result)
+                    resolve(result.insertId)
+                }, (_: any, e: Error) => {
+                    console.log(e)
+                    if(String(e.message).indexOf("UNIQUE constraint") >=0) {
+                        reject(new Error(`Position: ${position.name} already exists in the database`))
+                    } else {
+                        reject(new Error("Error creating a new position!!!"))
+                    }
+                });
+            });
+        })
+    }
+
 
     public startDatabase() {
         this.window = window as BrowserWindow
@@ -52,7 +101,8 @@ export class WebSQLService implements IDataService {
                 // create members table
                 tx.executeSql(`
                 CREATE TABLE IF NOT EXISTS \`member\` (
-                    nin varchar(11), 
+                    nin varchar(11) unique,
+                    status varchar(20),
                     fullname varchar(50),
                     phone varchar(15) unique,
                     stateOfOrigin varchar(20), 
@@ -81,7 +131,7 @@ export class WebSQLService implements IDataService {
                 CREATE TABLE IF NOT EXISTS \`voteSessionPositionCandidate\` (
                     voteSessionId int(5), 
                     votePositionId int(5), 
-                    memberId int(5),
+                    memberNin varchar(11),
                     createdTime datetime
                 )`);
                 // sessionMemberVote - id, voteSession, votePositionId, voteCandidateId, memberId, createdTime
@@ -90,7 +140,7 @@ export class WebSQLService implements IDataService {
                     voteSessionId int(5), 
                     votePositionId int(5), 
                     voteCandidateId int(5), 
-                    memberId int(5),
+                    memberNin varchar(11),
                     createdTime datetime
                 )`);
             });

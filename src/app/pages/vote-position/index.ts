@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Member } from 'src/app/models';
+import { Member, Position } from 'src/app/models';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
-  selector: 'LoginPage',
+  selector: 'VotePosition',
   templateUrl: './template.html',
   styleUrls: ['./style.scss']
 })
-export class LoginPage implements OnInit {
+export class VotePosition implements OnInit {
 
     errorMessage = ""
 
     pageForm = this.fb.group({
-        nin: ['78989887661', [Validators.required]],
-        password: ['1234', [Validators.required]],
+        name: ['', [Validators.required]],
+        description: ['', [Validators.required]],
     });
 
     constructor(
@@ -24,20 +24,20 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit(): void {
+        
     }
 
-    async login() {
-        const member = await this.coreService.database.login(this.pageForm.value as Member)
+    async createPosition() {
+        this.errorMessage = "";
+        const position = await this.coreService.database.createPosition(this.pageForm.value as Position)
         .catch(e => {
             this.errorMessage = e.message || "Unknown error has occurred."
             return null;
         })
 
-        const nextPageUrl = this.coreService.lastUrl || "/home"
-        console.log(nextPageUrl)
-        if(member) {
-            this.coreService.member = member;
-            this.coreService.router.navigate([nextPageUrl]);
+        if(position) {
+            alert("New position created with Id: " + position)
         }
     }
+
 }

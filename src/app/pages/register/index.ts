@@ -18,6 +18,7 @@ export class RegisterPage implements OnInit {
         phone: ['0808999001', [Validators.required]],
         stateOfOrigin: ['Lagos', [Validators.required]],
         password: ['1234', [Validators.required]],
+        status: ['Administrator'],
     });
 
     constructor(

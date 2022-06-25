@@ -1,3 +1,20 @@
-<div class="container">
-    <p>Login Page</p>
+<div class="container center">
+    <h1>Sign In</h1>
+
+    <form [formGroup]="pageForm">
+        <div class="inputFieldHolder">
+            <label>NIN:</label>
+            <input type="text" required formControlName="nin"/>
+        </div>
+        <div class="inputFieldHolder">
+            <label>Password:</label>
+            <input type="password" required formControlName="password" />
+        </div>
+        <div class="inputFieldHolder">
+            <button [disabled]="pageForm.invalid" (click)="login()">Sign In</button>
+        </div>
+        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
+
+        Not a member yet? <a routerLink="/register">Sign Up Now</a>
+    </form>
 </div>

@@ -1,0 +1,18 @@
+<div class="container center">
+    <h1>Sign In</h1>
+
+    <form [formGroup]="pageForm">
+        <div class="inputFieldHolder">
+            <label>Name:</label>
+            <input type="text" required formControlName="name"/>
+        </div>
+        <div class="inputFieldHolder">
+            <label>Description:</label>
+            <input type="text" required formControlName="description" />
+        </div>
+        <div class="inputFieldHolder">
+            <button [disabled]="pageForm.invalid" (click)="createPosition()">Create Position</button>
+        </div>
+        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
+    </form>
+</div>

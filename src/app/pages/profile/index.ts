@@ -9,7 +9,7 @@ import { CoreService } from 'src/app/services/core.service';
 export class ProfilePage implements OnInit {
 
   constructor(
-    private coreService: CoreService
+    public coreService: CoreService
   ) { }
 
   ngOnInit(): void {
