@@ -1,6 +1,6 @@
-import { HostListener, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { IDataService } from "../interfaces/data-service";
-import { Member, Position } from "../models";
+import { Member, Position, VoteSession, VoteSessionCandidate } from "../models";
 
 type BrowserWindow = Window & typeof globalThis & { openDatabase: any }
 
@@ -88,6 +88,91 @@ export class WebSQLService implements IDataService {
         })
     }
 
+    fetchPositions(): Promise<Position[]> {
+        return new Promise((resolve, reject) => {
+            this.database.transaction((tx: any) => {
+                tx.executeSql(`
+                select rowid, * from votePosition
+                `, 
+                [],
+                (_: any, result: any) => {
+                    console.log(result)
+                    if(!result.rows.length) {
+                        return reject(new Error("No position found"))
+                    }
+                    resolve(result.rows as Position[])
+                },
+                (_: any, e: Error) => {
+                    console.log(e)
+                    reject(new Error("Error fetching positions"))
+                });
+            });
+        })
+    }
+
+    createSession(voteSession: VoteSession): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.database.transaction((tx: any) => {
+                tx.executeSql(`
+                INSERT INTO voteSession VALUES (?,?,?,?,?)
+                `, [
+                    voteSession.name,
+                    voteSession.description,
+                    new Date(),
+                    voteSession.startTime,
+                    voteSession.endTime,
+                ], (_: any, result: any) => {
+                    console.log(result)
+                    resolve(result.insertId)
+                }, (_: any, e: Error) => {
+                    console.log(e)
+                    if(String(e.message).indexOf("UNIQUE constraint") >=0) {
+                        reject(new Error(`Session: ${voteSession.name} already exists in the database`))
+                    } else {
+                        reject(new Error("Error creating a new vote session!!!"))
+                    }
+                });
+            });
+        })
+    }
+
+    fetchVoteSessions(): Promise<VoteSession[]> {
+        return new Promise((resolve, reject) => {
+            this.database.transaction((tx: any) => {
+                tx.executeSql(`
+                select rowid, * from voteSession
+                `, 
+                [],
+                (_: any, result: any) => {
+                    console.log(result)
+                    if(!result.rows.length) {
+                        return reject(new Error("No vote-session found"))
+                    }
+                    console.log(result.rows._array);
+                    const voteSessions: VoteSession[] = [];
+                    for (let index = 0; index < result.rows.length; index++) {
+                        const voteSession = new VoteSession().load(result.rows[index])
+                        console.log(voteSession)
+                        voteSessions.push(voteSession)
+                    }
+                    resolve(voteSessions)
+                },
+                (_: any, e: Error) => {
+                    console.log(e)
+                    reject(new Error("Error fetching positions"))
+                });
+            });
+        })
+    }
+
+    createCandidate(candidate: VoteSessionCandidate): Promise<number> {
+        throw new Error("Method not implemented.");
+    }
+    
+    fetchCadidate(): Promise<VoteSessionCandidate[]> {
+        throw new Error("Method not implemented.");
+    }
+
 
     public startDatabase() {
         this.window = window as BrowserWindow
@@ -132,7 +217,8 @@ export class WebSQLService implements IDataService {
                     voteSessionId int(5), 
                     votePositionId int(5), 
                     memberNin varchar(11),
-                    createdTime datetime
+                    suspended int(1),
+                    createdTime datetime,
                 )`);
                 // sessionMemberVote - id, voteSession, votePositionId, voteCandidateId, memberId, createdTime
                 tx.executeSql(`

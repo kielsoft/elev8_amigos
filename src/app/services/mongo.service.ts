@@ -1,7 +1,8 @@
 import { IDataService } from "../interfaces/data-service";
-import { Member, Position } from "../models";
+import { Member, Position, VoteSession, VoteSessionCandidate } from "../models";
 
 export class MongoService implements IDataService {
+    
     startDatabase(): void {
         throw new Error("Method not implemented.");
     }
@@ -15,6 +16,26 @@ export class MongoService implements IDataService {
     }
 
     createPosition(position: Position): Promise<number> {
+        throw new Error("Method not implemented.");
+    }
+
+    fetchPositions(): Promise<Position[]> {
+        throw new Error("Method not implemented.");
+    }
+
+    createSession(voteSession: VoteSession): Promise<number> {
+        throw new Error("Method not implemented.");
+    }
+
+    fetchVoteSessions(): Promise<VoteSession[]> {
+        throw new Error("Method not implemented.");
+    }
+
+    createCandidate(candidate: VoteSessionCandidate): Promise<number> {
+        throw new Error("Method not implemented.");
+    }
+
+    fetchCadidate(): Promise<VoteSessionCandidate[]> {
         throw new Error("Method not implemented.");
     }
 

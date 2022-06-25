@@ -4,13 +4,12 @@
 
         <div class="navHolder">
             <nav class="">
-                <a *ngIf="coreService.member?.status" routerLink="/home">Home</a>
-                <a *ngIf="coreService.member?.status" routerLink="/profile">Profile</a>
-                <a *ngIf="coreService.member?.status === 'Administrator'" routerLink="/vote-positions">Vote Positions</a>
-                <a *ngIf="coreService.member?.status === 'Administrator'" routerLink="/vote-sessions">Vote Sessions</a>
-                <a *ngIf="coreService.member?.status" href="javascript:void" (click)="logout()">Logout</a>
+                <a *ngIf="coreService.isMemberLoggedIn" routerLink="/home">Home</a>
+                <a *ngIf="coreService.isMemberLoggedIn" routerLink="/profile">Profile</a>
+                <a *ngIf="coreService.isAdminLoggedIn" routerLink="/vote-positions">Vote Positions</a>
+                <a *ngIf="coreService.isAdminLoggedIn" routerLink="/vote-sessions">Vote Sessions</a>
+                <a *ngIf="coreService.isMemberLoggedIn" href="javascript:void" (click)="logout()">Logout</a>
             </nav>
         </div>
     </div>
-    
 </div>

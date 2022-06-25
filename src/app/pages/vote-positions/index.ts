@@ -4,11 +4,11 @@ import { Member, Position } from 'src/app/models';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
-  selector: 'VotePosition',
+  selector: 'VotePositionPage',
   templateUrl: './template.html',
   styleUrls: ['./style.scss']
 })
-export class VotePosition implements OnInit {
+export class VotePositionPage implements OnInit {
 
     errorMessage = ""
 
@@ -17,6 +17,8 @@ export class VotePosition implements OnInit {
         description: ['', [Validators.required]],
     });
 
+    positions: Position[] = [];
+
     constructor(
         public coreService: CoreService,
         private fb: FormBuilder,
@@ -24,7 +26,8 @@ export class VotePosition implements OnInit {
     }
 
     ngOnInit(): void {
-        
+        this.fetchPositions()
+
     }
 
     async createPosition() {
@@ -37,7 +40,17 @@ export class VotePosition implements OnInit {
 
         if(position) {
             alert("New position created with Id: " + position)
+            this.fetchPositions();
         }
+    }
+    
+    async fetchPositions() {
+        this.errorMessage = "";
+        this.positions = await this.coreService.database.fetchPositions()
+        .catch(e => {
+            this.errorMessage = e.message || "Unknown error has occurred."
+            return [];
+        })
     }
 
 }

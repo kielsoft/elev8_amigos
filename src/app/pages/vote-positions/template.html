@@ -15,4 +15,19 @@
         </div>
         <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
     </form>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Date</th>
+        </tr>
+        <tr *ngFor="let position of positions">
+            <td class="positionId">{{position.rowid}}</td>
+            <td>{{position.name}}</td>
+            <td>{{position.description}}</td>
+            <td>{{coreService.getSimpleDate(position.createdTime)}}</td>
+        </tr>
+    </table>
 </div>

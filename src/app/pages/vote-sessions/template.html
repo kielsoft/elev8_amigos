@@ -1,0 +1,47 @@
+<div class="container center">
+    <h1>Sign In</h1>
+
+    <form [formGroup]="pageForm">
+        <div class="inputFieldHolder">
+            <label>Name:</label>
+            <input type="text" required formControlName="name"/>
+        </div>
+        <div class="inputFieldHolder">
+            <label>Description:</label>
+            <input type="text" required formControlName="description" />
+        </div>
+        <div class="inputFieldHolder">
+            <label>Start Time:</label>
+            <input type="datetime-local" required formControlName="startTime" />
+        </div>
+        <div class="inputFieldHolder">
+            <label>End Time:</label>
+            <input type="datetime-local" required formControlName="endTime" />
+        </div>
+        <div class="inputFieldHolder">
+            <button [disabled]="pageForm.invalid" (click)="createSession()">Create Session</button>
+        </div>
+        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
+    </form>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th></th>
+        </tr>
+        <tr *ngFor="let voteSession of voteSessions">
+            <td class="positionId">{{voteSession.rowid}}</td>
+            <td>{{voteSession.name}}</td>
+            <td>{{voteSession.description}}</td>
+            <td>{{voteSession.createdTime.toISOString()}}</td>
+            <td>{{coreService.getSimpleDate(voteSession.startTime)}}</td>
+            <td>{{coreService.getSimpleDate(voteSession.endTime)}}</td>
+            <td><a routerLink="/vote-sessions/{{voteSession.rowid}}">View</a></td>
+        </tr>
+    </table>
+</div>

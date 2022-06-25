@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { components } from './components';
 import { HomePage } from './pages/home';
 import { LoginPage } from './pages/login';
 import { NotFoundPage } from './pages/not-found';
 import { ProfilePage } from './pages/profile';
 import { RegisterPage } from './pages/register';
-import { VotePosition } from './pages/vote-position';
-import { VoteSession } from './pages/vote-session';
+import { VotePositionPage } from './pages/vote-positions';
+import { VoteSessionDetailPage } from './pages/vote-session-detail';
+import { VoteSessionsPage } from './pages/vote-sessions';
 import { AdminLoginGuard } from './services/admin-login.guard';
 import { LoginGuard } from './services/login.guard';
 
@@ -19,8 +19,9 @@ const routes: Routes = [
     { path: 'register', component: RegisterPage },
     { path: 'login', component: LoginPage },
     { path: 'profile', component: ProfilePage, canActivate: [LoginGuard] },
-    { path: 'vote-sessions', component: VoteSession, canActivate: [AdminLoginGuard] },
-    { path: 'vote-positions', component: VotePosition, canActivate: [AdminLoginGuard] },
+    { path: 'vote-positions', component: VotePositionPage, canActivate: [AdminLoginGuard] },
+    { path: 'vote-sessions', component: VoteSessionsPage, canActivate: [AdminLoginGuard] },
+    { path: 'vote-sessions/:id', component: VoteSessionDetailPage, canActivate: [AdminLoginGuard] },
     { path: '**', component: NotFoundPage, },
 ];
 
@@ -30,8 +31,9 @@ const pages = [
     LoginPage,
     HomePage,
     ProfilePage,
-    VoteSession,
-    VotePosition,
+    VoteSessionsPage,
+    VotePositionPage,
+    VoteSessionDetailPage
 ];
 
 @NgModule({
