@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
-import { IDataService } from "../interfaces/data-service";
-import { Member, Position, VoteSession, VoteSessionCandidate } from "../models";
+import { HttpClient, HttpHeaders, HttpRequest, } from "@angular/common/http"
+import { IDataService, IHttpClientResponse } from "src/../interfaces/data-service";
+import { Member, Position, VoteSession, VoteSessionCandidate } from "src/../models";
+import { lastValueFrom } from "rxjs";
 
 type BrowserWindow = Window & typeof globalThis & { openDatabase: any }
 
@@ -11,161 +13,77 @@ export class WebSQLService implements IDataService {
     public window?: BrowserWindow;
     private database: any;
 
-    register(member: Member): Promise<Member> {
-        return new Promise((resolve, reject) => {
-            this.database.transaction((tx: any) => {
-                tx.executeSql(`
-                INSERT INTO member VALUES (?,?,?,?,?,?,?)
-                `, [
-                    member.nin,
-                    member.status,
-                    member.fullname,
-                    member.phone,
-                    member.stateOfOrigin,
-                    member.password,
-                    new Date(),
-                ], (_: any, result: any) => {
-                    console.log(result)
-                    resolve(result)
-                }, (_: any, e: Error) => {
-                    console.log(e)
-                    if(String(e.message).indexOf("UNIQUE constraint") >=0) {
-                        reject(new Error(`NIN: ${member.nin} or phone number: ${member.phone} already exists in the database`))
-                    } else {
-                        reject(new Error("Error creating a new member!!!"))
-                    }
-                });
-            });
+    constructor(
+        public http: HttpClient
+    ) {
+
+    }
+
+    apiClient<T>(command: string, body?: any) {
+        const headers: any = {};
+        headers['Content-Type'] = 'application/json';
+
+        const config = new HttpRequest("POST", `http://localhost:4000/api/${command}`, body, {
+            responseType: 'json',
+            headers: new HttpHeaders(headers),
+        })
+        return lastValueFrom(this.http.request<IHttpClientResponse<T>>(config)).then(response => {
+            // console.log(response)
+            return (response as any)?.body as IHttpClientResponse<T>
+        }).catch(e => {
+            // console.log)
+            return (e as any)?.error as IHttpClientResponse<T>
         })
     }
 
-    login(member: Member): Promise<Member> {
-        return new Promise((resolve, reject) => {
-            this.database.transaction((tx: any) => {
-                tx.executeSql(`
-                select rowid, * from member where nin=? and password=?
-                `, [
-                    member.nin,
-                    member.password,
-                ], (_: any, result: any) => {
-                    console.log(result)
-                    if(!result.rows.length) {
-                        return reject(new Error("Invalid nin or password"))
-                    }
-                    else if(result.rows[0].status == "Blocked"){
-                        return reject(new Error("This account is inactive, please contact the admin"))
-                    }
-                    resolve(result.rows[0] as Member)
-                }, (_: any, e: Error) => {
-                    console.log(e)
-                    reject(new Error("Error logging in at the momemt"))
-                });
-            });
-        })
+    async register(member: Member): Promise<boolean> {
+        const response = await this.apiClient<Member>('register', member);
+        if(response.status) return response.status;
+        throw new Error(response.message)
     }
 
-    createPosition(position: Position): Promise<number> {
-        return new Promise((resolve, reject) => {
-            this.database.transaction((tx: any) => {
-                tx.executeSql(`
-                INSERT INTO votePosition VALUES (?,?,?)
-                `, [
-                    position.name,
-                    position.description,
-                    new Date(),
-                ], (_: any, result: any) => {
-                    console.log(result)
-                    resolve(result.insertId)
-                }, (_: any, e: Error) => {
-                    console.log(e)
-                    if(String(e.message).indexOf("UNIQUE constraint") >=0) {
-                        reject(new Error(`Position: ${position.name} already exists in the database`))
-                    } else {
-                        reject(new Error("Error creating a new position!!!"))
-                    }
-                });
-            });
-        })
+    async login(member: Member): Promise<Member> {
+        const result = await this.apiClient<Member>('login', member);
+        if(result.status) return new Member().load(result.data);
+        throw new Error(result.message);
     }
 
-    fetchPositions(): Promise<Position[]> {
-        return new Promise((resolve, reject) => {
-            this.database.transaction((tx: any) => {
-                tx.executeSql(`
-                select rowid, * from votePosition
-                `, 
-                [],
-                (_: any, result: any) => {
-                    console.log(result)
-                    if(!result.rows.length) {
-                        return reject(new Error("No position found"))
-                    }
-                    resolve(result.rows as Position[])
-                },
-                (_: any, e: Error) => {
-                    console.log(e)
-                    reject(new Error("Error fetching positions"))
-                });
-            });
-        })
+    async createPosition(position: Position): Promise<boolean> {
+        const result = await this.apiClient<Position>('createPosition', position);
+        if(result.status) return result.status;
+        throw new Error(result.message);
     }
 
-    createSession(voteSession: VoteSession): Promise<number> {
-        return new Promise((resolve, reject) => {
-            this.database.transaction((tx: any) => {
-                tx.executeSql(`
-                INSERT INTO voteSession VALUES (?,?,?,?,?)
-                `, [
-                    voteSession.name,
-                    voteSession.description,
-                    new Date(),
-                    voteSession.startTime,
-                    voteSession.endTime,
-                ], (_: any, result: any) => {
-                    console.log(result)
-                    resolve(result.insertId)
-                }, (_: any, e: Error) => {
-                    console.log(e)
-                    if(String(e.message).indexOf("UNIQUE constraint") >=0) {
-                        reject(new Error(`Session: ${voteSession.name} already exists in the database`))
-                    } else {
-                        reject(new Error("Error creating a new vote session!!!"))
-                    }
-                });
-            });
-        })
+    async fetchPositions(): Promise<Position[]> {
+        const result = await this.apiClient<Position[]>('fetchPositions');
+        console.log(result)
+        if(result.status) {
+            const votePositions: Position[] = (result.data || []).map(votePosition => {
+                return new Position().load(votePosition);
+            })
+            return votePositions
+        }
+        throw new Error(result.message);
     }
 
-    fetchVoteSessions(): Promise<VoteSession[]> {
-        return new Promise((resolve, reject) => {
-            this.database.transaction((tx: any) => {
-                tx.executeSql(`
-                select rowid, * from voteSession
-                `, 
-                [],
-                (_: any, result: any) => {
-                    console.log(result)
-                    if(!result.rows.length) {
-                        return reject(new Error("No vote-session found"))
-                    }
-                    console.log(result.rows._array);
-                    const voteSessions: VoteSession[] = [];
-                    for (let index = 0; index < result.rows.length; index++) {
-                        const voteSession = new VoteSession().load(result.rows[index])
-                        console.log(voteSession)
-                        voteSessions.push(voteSession)
-                    }
-                    resolve(voteSessions)
-                },
-                (_: any, e: Error) => {
-                    console.log(e)
-                    reject(new Error("Error fetching positions"))
-                });
-            });
-        })
+    async createSession(voteSession: VoteSession): Promise<boolean> {
+        const result = await this.apiClient<Position>('createSession', voteSession);
+        if(result.status) return result.status;
+        throw new Error(result.message);
     }
 
-    createCandidate(candidate: VoteSessionCandidate): Promise<number> {
+    async fetchVoteSessions(): Promise<VoteSession[]> {
+        const result = await this.apiClient<VoteSession[]>('fetchVoteSessions');
+        if(result.status) {
+            const voteSessions: VoteSession[] = (result.data || []).map(voteSession => {
+                return new VoteSession().load(voteSession);
+            })
+            return voteSessions
+        }
+        throw new Error(result.message);
+    }
+
+    async createCandidate(candidate: VoteSessionCandidate): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
     
@@ -206,10 +124,10 @@ export class WebSQLService implements IDataService {
                 )`);
                 // votePosition - id, name, description, createdTime
                 tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS \`votePosition\` (
+               CREATE TABLE IF NOT EXISTS \`votePosition\` (
                     name varchar(50) unique, 
                     description varchar(50), 
-                    createdTime datetime
+                    createdTime datetime 
                 )`);
                 // voteSessionPositionCandidate - id, voteSessionId, votePositionId, memberId, createdTime
                 tx.executeSql(`
@@ -218,7 +136,7 @@ export class WebSQLService implements IDataService {
                     votePositionId int(5), 
                     memberNin varchar(11),
                     suspended int(1),
-                    createdTime datetime,
+                    createdTime datetime
                 )`);
                 // sessionMemberVote - id, voteSession, votePositionId, voteCandidateId, memberId, createdTime
                 tx.executeSql(`

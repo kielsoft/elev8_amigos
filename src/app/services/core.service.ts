@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { Member } from "../models";
+import { Member } from "src/../models";
 import { WebSQLService } from "./websql.service";
 
 @Injectable({

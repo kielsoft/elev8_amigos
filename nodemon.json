@@ -1,0 +1,6 @@
+{
+  "watch": ["dist"],
+  "ext": "*",
+  "ignore": ["src/**/specs/"],
+  "exec": "node dist/server/server.js"
+}

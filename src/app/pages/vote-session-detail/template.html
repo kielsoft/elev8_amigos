@@ -3,20 +3,12 @@
 
     <form [formGroup]="pageForm">
         <div class="inputFieldHolder">
-            <label>Name:</label>
-            <input type="text" required formControlName="name"/>
+            <label>Vote Position:</label>
+            <input type="text" required formControlName="votePositionId"/>
         </div>
         <div class="inputFieldHolder">
-            <label>Description:</label>
-            <input type="text" required formControlName="description" />
-        </div>
-        <div class="inputFieldHolder">
-            <label>Start Time:</label>
-            <input type="datetime-local" required formControlName="startTime" />
-        </div>
-        <div class="inputFieldHolder">
-            <label>End Time:</label>
-            <input type="datetime-local" required formControlName="endTime" />
+            <label>Member NIN:</label>
+            <input type="text" required formControlName="memberNin" />
         </div>
         <div class="inputFieldHolder">
             <button [disabled]="pageForm.invalid" (click)="createCandidate">Create Session</button>

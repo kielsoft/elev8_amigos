@@ -17,7 +17,8 @@ class BaseModel {
     }
     
     set createdTime(cTime: Date | string) {
-        if(typeof cTime == 'string'){
+        console.log(cTime);
+        if(typeof cTime !== 'object'){
             cTime = new Date(cTime)
         }
 

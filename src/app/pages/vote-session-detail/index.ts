@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { VoteSessionCandidate } from 'src/app/models';
+import { VoteSessionCandidate, Position } from 'src/../models';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
@@ -20,6 +20,7 @@ export class VoteSessionDetailPage implements OnInit {
     });
 
     candidates: VoteSessionCandidate[] = [];
+    positions: Position[] = [];
 
     constructor(
         public coreService: CoreService,
@@ -43,6 +44,15 @@ export class VoteSessionDetailPage implements OnInit {
             alert("New Vote-Session created with Id: " + candidateId)
             //this.fetchVoteSessions();
         }
+    }
+    
+    async fetchPosition() {
+        this.errorMessage = "";
+        this.positions = await this.coreService.database.fetchPositions()
+        .catch(e => {
+            this.errorMessage = e.message || "Unknown error has occurred."
+            return [];
+        })
     }
     
     async fetchCadidate() {
