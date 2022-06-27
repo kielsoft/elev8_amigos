@@ -8,7 +8,7 @@ import { CoreService } from 'src/app/services/core.service';
   templateUrl: './template.html',
   styleUrls: ['./style.scss']
 })
-export class VoteSessionDetailPage implements OnInit {
+export class VoteSessionPage implements OnInit {
 
     errorMessage = ""
 

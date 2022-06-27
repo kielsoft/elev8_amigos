@@ -8,7 +8,7 @@ import { NotFoundPage } from './pages/not-found';
 import { ProfilePage } from './pages/profile';
 import { RegisterPage } from './pages/register';
 import { VotePositionPage } from './pages/vote-positions';
-import { VoteSessionDetailPage } from './pages/vote-session-detail';
+import { VoteSessionPage } from './pages/vote-session';
 import { VoteSessionsPage } from './pages/vote-sessions';
 import { AdminLoginGuard } from './services/admin-login.guard';
 import { LoginGuard } from './services/login.guard';
@@ -21,7 +21,7 @@ const routes: Routes = [
     { path: 'profile', component: ProfilePage, canActivate: [LoginGuard] },
     { path: 'vote-positions', component: VotePositionPage, canActivate: [AdminLoginGuard] },
     { path: 'vote-sessions', component: VoteSessionsPage, canActivate: [AdminLoginGuard] },
-    { path: 'vote-sessions/:id', component: VoteSessionDetailPage, canActivate: [AdminLoginGuard] },
+    { path: 'vote-sessions/:id', component: VoteSessionPage, canActivate: [AdminLoginGuard] },
     { path: '**', component: NotFoundPage, },
 ];
 
@@ -33,7 +33,7 @@ const pages = [
     ProfilePage,
     VoteSessionsPage,
     VotePositionPage,
-    VoteSessionDetailPage
+    VoteSessionPage
 ];
 
 @NgModule({
