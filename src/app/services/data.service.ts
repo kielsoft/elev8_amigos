@@ -23,7 +23,7 @@ export class DataService implements IDataService {
         const headers: any = {};
         headers['Content-Type'] = 'application/json';
 
-        const config = new HttpRequest("POST", `http://localhost:4000/api/${command}`, body, {
+        const config = new HttpRequest("POST", `/api/${command}`, body, {
             responseType: 'json',
             headers: new HttpHeaders(headers),
         })

@@ -4,6 +4,7 @@ import { join } from 'path';
 import { json, urlencoded } from 'body-parser';
 import * as cors from "cors"
 import { CommandHandlier } from './api/command-handler';
+import * as path from 'path';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -12,9 +13,7 @@ export function app(): express.Express {
     server.use(cors())
     server.use(urlencoded({extended: false}))
     const distFolder = join(process.cwd(), 'dist/amigos');
-
-    server.set('view engine', 'html');
-    server.set('views', distFolder);
+    const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index.html';
 
     const commandHandler = new CommandHandlier()
 
@@ -43,7 +42,10 @@ export function app(): express.Express {
     });
 
     // Serve static files from /browser
-    server.get('*', express.static(distFolder));
+    server.use(express.static(distFolder));
+    server.get('*', (req, res) => {
+        res.sendFile(path.resolve(distFolder, indexHtml));
+    });
 
     return server;
 }
