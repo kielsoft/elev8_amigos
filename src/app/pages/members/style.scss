@@ -1,0 +1,16 @@
+form {
+    display: inline-block;
+}
+
+table {
+    text-align: left;
+
+    th, td {
+        border: thin solid #aaa;
+        padding: 3px;
+    }
+}
+
+.positionId {
+    text-align: right;
+}

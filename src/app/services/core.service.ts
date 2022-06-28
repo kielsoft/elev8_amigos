@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Member } from "src/../models";
-import { WebSQLService } from "./websql.service";
+import { DataService } from "./data.service";
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +12,7 @@ export class CoreService {
 
     constructor(
         public router: Router,
-        public database: WebSQLService
+        public database: DataService
     ) {
         this.loadExistingLoggedInMember()
     }

@@ -6,6 +6,7 @@
             <nav class="">
                 <a *ngIf="coreService.isMemberLoggedIn" routerLink="/home">Home</a>
                 <a *ngIf="coreService.isMemberLoggedIn" routerLink="/profile">Profile</a>
+                <a *ngIf="coreService.isAdminLoggedIn" routerLink="/members">Members</a>
                 <a *ngIf="coreService.isAdminLoggedIn" routerLink="/vote-positions">Positions</a>
                 <a *ngIf="coreService.isAdminLoggedIn" routerLink="/vote-sessions">Sessions</a>
                 <a *ngIf="coreService.isMemberLoggedIn" href="javascript:void" (click)="logout()">Logout</a>

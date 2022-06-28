@@ -1,0 +1,27 @@
+.voteSessionHolder {
+    background-color: #efefef;
+    border: thin solid #cccccc;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px #aaaaaa;
+
+    .voteSessionHeader {
+        background-color: #207dff;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        padding: 5px;
+        border-radius: 3px;
+        box-shadow: 2px 2px 5px #aaaaaa;
+        margin-bottom: 10px;
+    }
+
+    .votePositions {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    VotePositionComponent {
+        display: contents;
+    }
+}

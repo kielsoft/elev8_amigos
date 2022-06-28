@@ -27,7 +27,7 @@ body {
         font-size: 18px;
     }
 
-    input {
+    input, select {
         display: block;
         height: 40px;
         width: 400px;
@@ -58,4 +58,21 @@ body {
 
 a {
     text-decoration: none;
+}
+
+table {
+    text-align: left;
+
+    th, td {
+        border: thin solid #aaa;
+        padding: 3px;
+    }
+}
+
+.dataTable {
+    margin: 0 auto;
+}
+
+.rowId {
+    text-align: right;
 }

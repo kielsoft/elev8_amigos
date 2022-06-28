@@ -1,0 +1,87 @@
+.positionHolder {
+    vertical-align: top;
+    display: inline-block;
+    border: thin solid #bbb;
+    width: 300px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    text-align: center;
+
+    .positionTitle {
+        font-weight: bold;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .candidatesHolder {
+        height: 300px;
+    }
+
+    .positionCandidateHolder {
+
+        .candidateName {
+            text-align: left;
+            line-height: 30px;
+            margin-top: 5px;
+            background-color: rgb(255, 255, 255, 0.8);
+            border: thin solid #1851d6;
+            border-radius: 5px;
+            display: block;
+            font-size: 18px;
+            padding: 10px;
+
+            .customRadio{
+                height: 15px;
+                width: 15px;
+                background-color: white;
+                border: thin solid #002e98;
+                border-radius: 8px;
+                float: right;
+                margin: 8px 10px 0 0;
+
+                &.forAdmin {
+                    height: 30px;
+                    width: 30px;
+                    margin: 0px 6px 0 0;
+                    text-align: center;
+                    background-color: #002e98;
+                    color: white;
+                }
+            }
+        }
+
+        input {
+            display: none;
+            &:checked ~ .candidateName {
+                background-color: #002e98;
+                color: white;
+
+                .customRadio{
+                    background-color: #002e98;
+                    border: 2px solid white;
+                    margin: 7px 10px 0 0;
+
+                }
+            }
+        }
+    }
+
+    button {
+        background-color: #002e98;
+        color: white;
+        height: 40px;
+        width: 200px;
+        font-size: 18px;
+        font-weight: bold;
+
+        &:disabled {
+            background-color: #a6a6a6;
+            color: rgb(134, 134, 134);
+        }
+    }
+}
+
+.errorMessage {
+    white-space: normal;
+}

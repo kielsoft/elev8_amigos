@@ -13,10 +13,12 @@
         <div class="inputFieldHolder">
             <button [disabled]="pageForm.invalid" (click)="createPosition()">Create Position</button>
         </div>
-        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
     </form>
+    <div *ngIf="errorMessage" class="errorMessage"><br />{{errorMessage}}</div>
+    <br />
 
-    <table>
+    <h2>All Positions:</h2>
+    <table class="dataTable">
         <tr>
             <th>ID</th>
             <th>Name</th>

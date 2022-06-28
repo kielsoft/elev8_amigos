@@ -39,7 +39,8 @@ export class VotePositionPage implements OnInit {
         })
 
         if(position) {
-            alert("New position created with Id: " + position)
+            alert("New position created successfully")
+            this.pageForm.reset()
             this.fetchPositions();
         }
     }

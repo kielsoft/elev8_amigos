@@ -13,12 +13,16 @@ export class RegisterPage implements OnInit {
     errorMessage = ""
 
     pageForm = this.fb.group({
-        nin: ['78989887661', [Validators.required]],
+        nin: ['78989887661', [
+            Validators.required, 
+            Validators.minLength(11),
+            Validators.maxLength(11),
+        ]],
         fullname: ['Olayode Ezekiel', [Validators.required]],
         phone: ['0808999001', [Validators.required]],
         stateOfOrigin: ['Lagos', [Validators.required]],
         password: ['1234', [Validators.required]],
-        status: ['Administrator'],
+        status: ['Member'],
     });
 
     constructor(

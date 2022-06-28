@@ -21,10 +21,12 @@
         <div class="inputFieldHolder">
             <button [disabled]="pageForm.invalid" (click)="createSession()">Create Session</button>
         </div>
-        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
     </form>
+    <div *ngIf="errorMessage" class="errorMessage"><br />{{errorMessage}}</div>
+    <br />
 
-    <table>
+    <h2>All Vote Sessions:</h2>
+    <table class="dataTable">
         <tr>
             <th>ID</th>
             <th>Name</th>
@@ -32,6 +34,7 @@
             <th>Created Date</th>
             <th>From</th>
             <th>To</th>
+            <th></th>
             <th></th>
         </tr>
         <tr *ngFor="let voteSession of voteSessions">
@@ -41,7 +44,8 @@
             <td>{{voteSession.createdTime.toISOString()}}</td>
             <td>{{coreService.getSimpleDate(voteSession.startTime)}}</td>
             <td>{{coreService.getSimpleDate(voteSession.endTime)}}</td>
-            <td><a routerLink="/vote-sessions/{{voteSession.rowid}}">View</a></td>
+            <td><a routerLink="/vote-sessions/{{voteSession.rowid}}">Add Candidate</a></td>
+            <td><a routerLink="/vote-sessions/{{voteSession.rowid}}/result">View Result</a></td>
         </tr>
     </table>
 </div>

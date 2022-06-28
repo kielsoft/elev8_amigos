@@ -34,7 +34,6 @@ export class LoginPage implements OnInit {
         })
 
         const nextPageUrl = this.coreService.lastUrl || "/home"
-        console.log(nextPageUrl)
         if(member) {
             this.coreService.member = member;
             this.coreService.router.navigate([nextPageUrl]);

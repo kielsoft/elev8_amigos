@@ -1,37 +1,47 @@
 <div class="container center">
-    <h1>Sign In</h1>
+    <h1>Vote Session: {{voteSession.name}}</h1>
 
     <form [formGroup]="pageForm">
         <div class="inputFieldHolder">
             <label>Vote Position:</label>
-            <input type="text" required formControlName="votePositionId"/>
+            <select type="text" required formControlName="votePositionId">
+                <option value="">Select A Position</option>
+                <option *ngFor="let postion of positions" [value]="postion.rowid">{{postion.name}}</option>
+            </select>
         </div>
         <div class="inputFieldHolder">
             <label>Member NIN:</label>
             <input type="text" required formControlName="memberNin" />
         </div>
         <div class="inputFieldHolder">
-            <button [disabled]="pageForm.invalid" (click)="createCandidate">Create Session</button>
+            <button [disabled]="pageForm.invalid" (click)="createCandidate()">Add Candidate</button>
         </div>
-        <div *ngIf="errorMessage" class="errorMessage">{{errorMessage}}</div>
     </form>
 
-    <table>
+    <div *ngIf="errorMessage" class="errorMessage"><br />{{errorMessage}}</div>
+    <br />
+    <h2>All Candidates:</h2>
+    <table class="dataTable">
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Description</th>
+            <th>Position</th>
             <th>Created Date</th>
-            <th>From</th>
-            <th>To</th>
+            <th>Status</th>
+            <th>Votes</th>
             <th></th>
         </tr>
         <tr *ngFor="let candidate of candidates">
-            <td class="positionId">{{candidate.rowid}}</td>
+            <td class="rowId">{{candidate.rowid}}</td>
             <td>{{candidate.member.fullname}}</td>
             <td>{{candidate.position.name}}</td>
             <td>{{candidate.createdTime.toISOString()}}</td>
-            <td><a href="javascript:void">Suspend</a></td>
+            <td>{{candidate.suspended? "Suspended" : "Active"}}</td>
+            <td>{{candidate.totalVotes}}</td>
+            <td><a href="javascript:void">Edit</a></td>
         </tr>
     </table>
+    <br />
+    <a routerLink="/vote-sessions/{{voteSession.rowid}}/result">View Session Result</a>
+    <br />
 </div>

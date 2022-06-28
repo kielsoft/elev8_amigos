@@ -4,7 +4,7 @@
     <form [formGroup]="pageForm">
         <div class="inputFieldHolder">
             <label>NIN:</label>
-            <input type="text" required formControlName="nin"/>
+            <input type="text" required formControlName="nin" minlength="11" maxlength="11"/>
         </div>
         <div class="inputFieldHolder">
             <label>Fullname:</label>

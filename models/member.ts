@@ -1,8 +1,8 @@
 class BaseModel {
+    rowid = 0
     private cTime: Date = null as any;
 
     load(data: any) {
-        console.log(Object.getOwnPropertyNames(this))
         Object.getOwnPropertyNames(this).forEach(k => {
             (this as any)[k] = data[k]
         })
@@ -17,7 +17,6 @@ class BaseModel {
     }
     
     set createdTime(cTime: Date | string) {
-        console.log(cTime);
         if(typeof cTime !== 'object'){
             cTime = new Date(cTime)
         }
@@ -27,7 +26,6 @@ class BaseModel {
 }
 
 export class Member extends BaseModel {
-    rowid: number = 0
     nin: string = ""
     status: string = ""
     fullname: string = ""
@@ -37,13 +35,11 @@ export class Member extends BaseModel {
 }
 
 export class Position extends BaseModel {
-    rowid = 0
     name = ""
     description = ""
 }
 
 export class VoteSession extends BaseModel {
-    rowid = 0
     name = ""
     description = ""
     startTime: Date = null as any
@@ -51,11 +47,19 @@ export class VoteSession extends BaseModel {
 }
 
 export class VoteSessionCandidate extends BaseModel {
-    rowid = 0
-    voteSessionId = ""
-    votePositionId = ""
+    voteSessionId = 0
+    votePositionId = 0
     memberNin = ""
     suspended = false
     member: Member = null as any
     position: Position = null as any
+    totalVotes = 0
+}
+
+export class SessionMemberVote extends BaseModel {
+    voteSessionId = 0
+    votePositionId = 0
+    voteCandidateId = 0
+    memberNin = ""
+    candidataFullname = ""
 }

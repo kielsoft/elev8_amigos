@@ -1,0 +1,11 @@
+<div *ngIf="candidates.length && voteSessionId" class="positionHolder" [formGroup]="pageForm">
+    <div class="positionTitle">{{candidates[0].position.name}}</div>
+    <div class="candidatesHolder">
+        <label class="positionCandidateHolder" *ngFor="let candidate of candidates">
+            <input *ngIf="!forAdmin && (!memberVote?.rowid || memberVote.voteCandidateId==candidate.rowid)" formControlName="voteCandidateId" type="radio" value="{{candidate.rowid}}">
+            <div class="candidateName">{{candidate.member.fullname}}<span class="customRadio" [class.forAdmin]="forAdmin">{{forAdmin? candidate.totalVotes : ''}}</span></div>
+        </label>
+    </div>
+    <button *ngIf="!forAdmin" [disabled]="memberVote?.rowid || pageForm.invalid" (click)="submitMemberVote()">Vote Now</button>
+    <div *ngIf="errorMessage" class="errorMessage"><br />{{errorMessage}}</div>
+</div>

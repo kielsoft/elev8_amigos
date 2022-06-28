@@ -1,0 +1,5 @@
+<div class="container center">
+    <h3>Vote Session Result for:</h3>
+    <h1>{{voteSession.name}}</h1>
+    <VoteSessionComponent *ngIf="voteSession.rowid" [voteSession]="voteSession" [forAdmin]="true"></VoteSessionComponent>
+</div>

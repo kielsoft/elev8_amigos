@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { VoteSessionCandidate, Position } from 'src/../models';
+import { ActivatedRoute } from '@angular/router';
+import { VoteSessionCandidate, Position, VoteSession } from 'src/../models';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
@@ -13,39 +14,48 @@ export class VoteSessionPage implements OnInit {
     errorMessage = ""
 
     pageForm = this.fb.group({
-        name: ['Club Executives 2022/2023', [Validators.required]],
-        description: ['Club Executives 2022/2023', [Validators.required]],
-        startTime: ['', [Validators.required]],
-        endTime: ['', [Validators.required]],
+        voteSessionId: ['', [Validators.required]],
+        votePositionId: ['', [Validators.required]],
+        memberNin: ['0809090909090', [Validators.required]],
+        suspended: ['0', [Validators.required]],
     });
 
+    voteSession: VoteSession = new VoteSession()
     candidates: VoteSessionCandidate[] = [];
     positions: Position[] = [];
 
     constructor(
         public coreService: CoreService,
         private fb: FormBuilder,
+        private route: ActivatedRoute,
     ) {
     }
 
     ngOnInit(): void {
-        //this.fetchVoteSessions()
+        this.getVoteSession({rowid: Number(this.route.snapshot.paramMap.get("id"))} as VoteSession)
+        this.fetchCadidates()
     }
 
-    async createCandidate() {
+    async getVoteSession(voteSession: VoteSession) {
         this.errorMessage = "";
-        const candidateId = await this.coreService.database.createCandidate(this.pageForm.value as any)
+        this.voteSession = await this.coreService.database.getVoteSession(voteSession)
         .catch(e => {
             this.errorMessage = e.message || "Unknown error has occurred."
-            return null;
+            return new VoteSession();
         })
 
-        if(candidateId) {
-            alert("New Vote-Session created with Id: " + candidateId)
-            //this.fetchVoteSessions();
+        if(!this.voteSession.name) {
+           this.coreService.router.navigate(["/vote-sessions"])
+           alert(this.errorMessage || 'Vote session not found')
         }
+
+        this.pageForm.controls.voteSessionId.setValue(this.voteSession.rowid.toString())
+
+        // fetch Positions
+        this.fetchPosition()
+
     }
-    
+
     async fetchPosition() {
         this.errorMessage = "";
         this.positions = await this.coreService.database.fetchPositions()
@@ -54,10 +64,24 @@ export class VoteSessionPage implements OnInit {
             return [];
         })
     }
-    
-    async fetchCadidate() {
+
+    async createCandidate() {
         this.errorMessage = "";
-        this.candidates = await this.coreService.database.fetchCadidate()
+        const success = await this.coreService.database.createCandidate(this.pageForm.value as any)
+        .catch(e => {
+            this.errorMessage = e.message || "Unknown error has occurred."
+            return false;
+        })
+
+        if(success) {
+            alert("New Vote-Session candidate is created successfully")
+            this.fetchCadidates();
+        }
+    }
+    
+    async fetchCadidates() {
+        this.errorMessage = "";
+        this.candidates = await this.coreService.database.fetchSessionCadidates({rowid: Number(this.route.snapshot.paramMap.get("id"))} as VoteSession)
         .catch(e => {
             this.errorMessage = e.message || "Unknown error has occurred."
             return [];

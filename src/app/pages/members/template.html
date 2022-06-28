@@ -1,0 +1,25 @@
+<div class="container center">
+    <h1>Members</h1>
+    <table class="dataTable">
+        <tr>
+            <th>ID</th>
+            <th>NIN</th>
+            <th>Fullanme</th>
+            <th>Phone</th>
+            <th>State of Origin</th>
+            <th>Joined on</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        <tr *ngFor="let member of members">
+            <td class="positionId">{{member.rowid}}</td>
+            <td>{{member.nin}}</td>
+            <td>{{member.fullname}}</td>
+            <td>{{member.phone}}</td>
+            <td>{{member.stateOfOrigin}}</td>
+            <td>{{member.createdTime.toISOString()}}</td>
+            <td>{{member.status}}</td>
+            <td><a href="javascript:void">View</a></td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,11 @@
+<div class="voteSessionHolder" *ngIf="voteSession.rowid">
+    <div class="voteSessionHeader">{{voteSession.name}}</div>
+    <div class="votePositions">
+        <VotePositionComponent 
+        *ngFor="let candidates of candidatesGroups"
+        [voteSessionId]="voteSession.rowid"
+        [candidates]="candidates"
+        [forAdmin]="forAdmin"
+        ></VotePositionComponent>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 <div class="container">
-    <p>Home Page</p>
-    <h1>Welcome to our voting system</h1>
+    <h1>Welcome, {{coreService.member.fullname}}</h1>
+
+    <VoteSessionComponent [voteSession]="voteSession" *ngFor="let voteSession of voteSessions"></VoteSessionComponent>
 </div>

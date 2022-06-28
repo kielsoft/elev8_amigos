@@ -20,6 +20,7 @@ export function app(): express.Express {
 
     // Example Express Rest API endpoints
     server.use('/api/:command', async (req, res) => { 
+        // console.log(req.baseUrl, req.body)
         const command = req.params.command;
         try {
             const response: any = await (commandHandler as any)[command](req.body)
